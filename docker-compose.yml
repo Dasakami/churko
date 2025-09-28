@@ -34,6 +34,17 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+  nginx:
+    image: nginx:stable
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certs:/etc/letsencrypt
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - web
+    restart: always
 
 volumes:
   postgres_data:
