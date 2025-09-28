@@ -45,6 +45,13 @@ services:
     depends_on:
       - web
     restart: always
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certs:/etc/letsencrypt
+      - ./certs-data:/var/lib/letsencrypt
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    entrypoint: ""
 
 volumes:
   postgres_data:
