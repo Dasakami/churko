@@ -34,25 +34,34 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+
   nginx:
     image: nginx:stable
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./certs:/etc/letsencrypt
     ports:
-      - "8080:80"
-      - "446:443"
+      - "8080:80"   # HTTP нестандартный порт
+      - "446:443"   # HTTPS нестандартный порт
     depends_on:
       - web
     restart: always
+
   certbot:
     image: certbot/certbot
     volumes:
       - ./certs:/etc/letsencrypt
       - ./certs-data:/var/lib/letsencrypt
-      - ./nginx/conf.d:/etc/nginx/conf.d
     entrypoint: ""
+    command: >
+      certonly --webroot 
+      --webroot-path=/var/www/certbot 
+      --email your-email@example.com 
+      --agree-tos 
+      --no-eff-email 
+      -d churko.daskoro.site -d www.churko.daskoro.site
 
 volumes:
   postgres_data:
   static_volume:
+  certs-data:
