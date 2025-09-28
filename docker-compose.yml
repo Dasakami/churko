@@ -42,8 +42,8 @@ services:
       - ./certs:/etc/letsencrypt
       - ./certbot-webroot:/var/www/certbot
     ports:
-      - "8080:80"   # HTTP нестандартный порт
-      - "446:443"   # HTTPS нестандартный порт
+      - "80:80"   # HTTP нестандартный порт
+      - "443:443"   # HTTPS нестандартный порт
     depends_on:
       - web
     restart: always
