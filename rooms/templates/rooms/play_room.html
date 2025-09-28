@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+
+{% block title %}Комната {{ room.id }} - {{ room.level.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- Header -->
+    <div class="card p-6 mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                🏘️ {{ room.level.district.name }} • {{ room.level.name }}
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400">
+                Комната #{{ room.id }} • Создана {{ room.created_at|date:"d.m.Y в H:i" }}
+            </p>
+        </div>
+        <div class="mt-4 md:mt-0 flex items-center space-x-6">
+            <div class="text-center">
+                <div class="text-lg font-bold text-primary-600">{{ progress.task_index|add:1 }}</div>
+                <div class="text-xs text-gray-600 dark:text-gray-400">из {{ room.level.tasks.count }}</div>
+            </div>
+            <div class="w-20 h-20 relative">
+                <div class="w-full h-full bg-gray-200 dark:bg-slate-700 rounded-full"></div>
+                <div id="timer-progress" class="absolute inset-0 rounded-full bg-gradient-to-r from-primary-500 to-gold-500 transition-all duration-1000"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div id="timer" class="text-lg font-bold text-gray-900 dark:text-white">--:--</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+
+        <!-- Main Task Area -->
+        <div class="lg:col-span-2 space-y-6">
+
+            {% if task %}
+            <div class="card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                        🧩 {{ task.title }}
+                    </h2>
+                    <div class="bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 px-3 py-1 rounded-full text-sm">
+                        Задание {{ progress.task_index|add:1 }}
+                    </div>
+                </div>
+
+                <div class="prose prose-gray dark:prose-invert max-w-none mb-6">
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        {{ task.text }}
+                    </p>
+
+                    {% if task.image %}
+                    <div class="mt-4">
+                        <img src="{{ task.image.url }}" alt="Изображение задачи" 
+                             class="rounded-lg shadow-md max-w-full h-auto">
+                    </div>
+                    {% endif %}
+
+                    {% if task.hint %}
+                    <div x-data="{ showHint: false }" class="mt-4">
+                        <button @click="showHint = !showHint" 
+                                class="text-gold-600 hover:text-gold-700 text-sm font-medium">
+                            💡 Показать подсказку
+                        </button>
+                        <div x-show="showHint" x-transition class="mt-2 p-3 bg-gold-50 dark:bg-gold-900/20 border border-gold-200 dark:border-gold-800 rounded-lg">
+                            <p class="text-gold-800 dark:text-gold-300 text-sm">{{ task.hint }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Answer Form -->
+                <form method="POST" class="space-y-4">
+                    {% csrf_token %}
+                    <div>
+                        <label class="form-label">Введите код решения:</label>
+                        <input type="text" name="code" class="form-input text-lg font-mono" placeholder="Введите код..." autofocus required>
+                    </div>
+                    <button type="submit" class="btn-success text-lg px-8">✓ Отправить решение</button>
+                </form>
+            </div>
+            {% endif %}
+
+            <!-- Invite Links (только для владельца) -->
+            {% if room.created_by == user %}
+            <div class="card p-6">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">🔗 Пригласить друзей</h3>
+                <div class="space-y-3">
+                    {% for link in invite_links %}
+                    <div class="flex items-center space-x-3">
+                        <input type="text" value="{{ link }}" class="form-input flex-1 text-sm" readonly>
+                        <button onclick="copyToClipboard('{{ link }}')" class="btn-secondary px-3 py-2 text-sm">
+                            📋
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                <form method="POST" action="{% url 'create_room_invite_link' room.id %}" class="mt-4">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-primary text-sm">
+                        🔗 Создать новую ссылку
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+
+            <!-- Team Members -->
+            <div class="card p-6">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                    👥 Участники 
+                    <span class="ml-2 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 text-sm px-2 py-1 rounded-full">
+                        {{ members.count }}
+                    </span>
+                </h3>
+
+                <div class="space-y-3">
+                    {% for member in members %}
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-gold-500 rounded-full flex items-center justify-center text-white font-bold">
+                            {{ member.user.username.0|upper }}
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900 dark:text-white">
+                                {{ member.user.username }}
+                                {% if member.user == room.created_by %}
+                                <span class="text-xs bg-gold-100 dark:bg-gold-900/30 text-gold-800 dark:text-gold-300 px-2 py-1 rounded-full ml-1">
+                                    Лидер
+                                </span>
+                                {% endif %}
+                            </div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">
+                                Уровень {{ member.user.profile.level|default:1 }}
+                            </div>
+                        </div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Chat -->
+            <div class="card p-6 h-96 flex flex-col" x-data="roomChat({{ room.id }})" x-init="init()">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">💬 Чат команды</h3>
+                <div id="chat-messages" class="flex-1 overflow-y-auto space-y-2 mb-4 pr-2" style="scrollbar-width: thin;">
+                    {% for message in messages %}
+                    <div class="flex items-start space-x-2">
+                        <div class="w-6 h-6 bg-gradient-to-br from-primary-500 to-gold-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                            {{ message.user.username.0|upper }}
+                        </div>
+                        <div class="flex-1">
+                            <div class="bg-gray-100 dark:bg-slate-700 rounded-lg px-3 py-2 chat-bubble">
+                                <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                    {{ message.user.username }} • {{ message.timestamp|date:"H:i" }}
+                                </div>
+                                <p class="text-sm text-gray-900 dark:text-gray-100">{{ message.message }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <form @submit.prevent="sendMessage()" class="flex space-x-2">
+                    <input type="text" x-model="messageText" placeholder="Написать сообщение..." 
+                        class="flex-1 px-4 py-3 rounded-xl border border-gray-300 bg-white/70
+                               text-gray-900 placeholder-gray-400
+                               focus:border-primary-500 focus:ring-2 focus:ring-primary-500/40
+                               shadow-sm backdrop-blur-sm transition duration-200" maxlength="500">
+                    <button type="submit" 
+                            class="px-5 py-3 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600
+                                   text-white font-semibold shadow-md
+                                   hover:from-primary-600 hover:to-primary-700
+                                   active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed
+                                   transition duration-200"
+                            :disabled="!messageText.trim()">
+                        📤
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// Таймер
+let timeLeft = {{ progress.time_left_for_task }};
+const totalTime = {{ room.level.time_limit_per_task|default:600 }};
+function updateTimer() {
+    if (timeLeft <= 0) { window.location.reload(); return; }
+    const minutes = Math.floor(timeLeft/60);
+    const seconds = timeLeft % 60;
+    document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2,'0')}`;
+    const percentage = (timeLeft/totalTime) * 100;
+    const progressEl = document.getElementById('timer-progress');
+    progressEl.style.background = `conic-gradient(from 0deg, ${timeLeft<60?'#ef4444':'#3b82f6'} ${percentage*3.6}deg, transparent ${percentage*3.6}deg)`;
+    if (timeLeft<60) progressEl.classList.add('timer-glow');
+    timeLeft--;
+}
+setInterval(updateTimer,1000);
+updateTimer();
+
+// Чат
+function roomChat(roomId) {
+    return {
+        messageText: '',
+        socket: null,
+        init() { this.connectWebSocket(roomId); },
+        connectWebSocket(roomId) {
+            if (this.socket) return;
+            const protocol = window.location.protocol==='https:'?'wss:':'ws:';
+            this.socket = new WebSocket(`${protocol}//${window.location.host}/ws/room/${roomId}/`);
+            this.socket.onmessage = (event)=>{ this.addMessageToChat(JSON.parse(event.data)); };
+        },
+        sendMessage() {
+            if(this.messageText.trim() && this.socket){
+                this.socket.send(JSON.stringify({'message':this.messageText.trim(),'type':'chat_message'}));
+                this.messageText='';
+            }
+        },
+        addMessageToChat(data){
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'flex items-start space-x-2';
+            messageDiv.innerHTML = `
+                <div class="w-6 h-6 bg-gradient-to-br from-primary-500 to-gold-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    ${data.username.charAt(0).toUpperCase()}
+                </div>
+                <div class="flex-1">
+                    <div class="bg-gray-100 dark:bg-slate-700 rounded-lg px-3 py-2 chat-bubble">
+                        <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                            ${data.username} • ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}
+                        </div>
+                        <p class="text-sm text-gray-900 dark:text-gray-100">${data.message}</p>
+                    </div>
+                </div>`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+}
+
+// Copy
+function copyToClipboard(text){ navigator.clipboard.writeText(text).then(()=>{ alert('Ссылка скопирована!'); }); }
+</script>
+{% endblock %}

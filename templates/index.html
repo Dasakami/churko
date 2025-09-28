@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}Churko - Добро пожаловать в мир городских квестов!{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative overflow-hidden bg-gradient-to-br from-primary-900 via-slate-800 to-primary-900 text-white">
+    <div class="absolute inset-0 bg-black/20"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-gold-500/20 animate-pulse-slow"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div class="text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-500 to-gold-500 rounded-full mb-8 animate-bounce-slow glow">
+                <span class="text-3xl font-bold">C</span>
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
+                Добро пожаловать в <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600">Churko</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                Исследуй районы города, решай головоломки, собирай команду друзей и покори все уровни!
+            </p>
+            
+            {% if user.is_authenticated %}
+            <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+                <a href="/districts/" class="btn-gold text-lg px-8 py-4">
+                    🏘️ Выбрать район
+                </a>
+                <a href="{% url 'user:friend_list' %}" class="btn-secondary text-lg px-8 py-4">
+                    👥 Мои друзья
+                </a>
+            </div>
+            {% else %}
+            <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+                <a href="{% url 'user:register' %}" class="btn-gold text-lg px-8 py-4">
+                    🚀 Начать игру
+                </a>
+                <a href="{% url 'user:login' %}" class="btn-secondary text-lg px-8 py-4">
+                    🔑 Уже играю
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Что тебя ждет в игре?
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                Churko — это не просто игра, это целый мир приключений в твоем городе
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="card p-8 text-center group">
+                <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <span class="text-2xl">🏘️</span>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Исследуй районы</h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Каждый район города скрывает уникальные задачи и секреты. Выбери свой путь!
+                </p>
+            </div>
+
+            <div class="card p-8 text-center group">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <span class="text-2xl">🧩</span>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Решай головоломки</h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Проверь свою смекалку и логическое мышление в увлекательных задачах разной сложности.
+                </p>
+            </div>
+
+            <div class="card p-8 text-center group">
+                <div class="w-16 h-16 bg-gradient-to-br from-gold-500 to-gold-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <span class="text-2xl">👥</span>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Играй с друзьями</h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Создавай команды, соревнуйся с друзьями и делитесь достижениями!
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+{% if user.is_authenticated %}
+<section class="py-20 bg-gray-100 dark:bg-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Привет, {{ user.username }}! 👋
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-400">
+                Готов к новым приключениям?
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-6">
+            <div class="card p-6 text-center">
+                <div class="text-3xl font-bold text-primary-600 mb-2">{{ user.profile.completed_levels|default:0 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Пройдено уровней</div>
+            </div>
+            <div class="card p-6 text-center">
+                <div class="text-3xl font-bold text-green-600 mb-2">{{ user.profile.coins|default:0 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Монет</div>
+            </div>
+            <div class="card p-6 text-center">
+                <div class="text-3xl font-bold text-gold-600 mb-2">{{ user.profile.hints|default:3 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Подсказок</div>
+            </div>
+            <div class="card p-6 text-center">
+                <div class="text-3xl font-bold text-red-600 mb-2">{{ user.friendships.count|default:0 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Друзей</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Recent Activity -->
+<section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Последние достижения игроков
+            </h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="card p-6">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-bold">И</span>
+                    </div>
+                    <div>
+                        <div class="font-medium">Игрок123</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">2 минуты назад</div>
+                    </div>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400">
+                    🏆 Прошел район "Центр" за рекордное время!
+                </p>
+            </div>
+
+            <div class="card p-6">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-bold">К</span>
+                    </div>
+                    <div>
+                        <div class="font-medium">КвестМастер</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">5 минут назад</div>
+                    </div>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400">
+                    🧩 Решил сложную головоломку в районе "Старый город"
+                </p>
+            </div>
+
+            <div class="card p-6">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-r from-gold-500 to-gold-600 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-bold">Л</span>
+                    </div>
+                    <div>
+                        <div class="font-medium">ЛогикГуру</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">8 минут назад</div>
+                    </div>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400">
+                    👥 Создал команду из 5 игроков для прохождения "Промзоны"
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

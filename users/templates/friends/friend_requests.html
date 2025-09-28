@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Заявки в друзья - Churko{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">📬 Заявки в друзья</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Управляйте входящими и исходящими заявками</p>
+        </div>
+        <a href="{% url 'user:friend_list' %}" class="btn-secondary">
+            ← Назад к друзьям
+        </a>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+        <!-- Incoming Requests -->
+        <div class="card p-6">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                📥 Входящие заявки
+                <span class="ml-2 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 text-sm px-2 py-1 rounded-full">
+                    {{ recieved_requests.count }}
+                </span>
+            </h2>
+
+            {% if recieved_requests %}
+            <div class="space-y-4">
+                {% for request in recieved_requests %}
+                <div class="border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:border-primary-300 transition-colors">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-gold-500 rounded-full flex items-center justify-center text-white font-bold">
+                            {{ request.sender.username.0|upper }}
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 dark:text-white">{{ request.sender.username }}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                Уровень {{ request.sender.profile.level|default:1 }} • {{ request.created_at|timesince }} назад
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 flex space-x-2">
+                        <form method="POST" action="{% url 'user:accept_request' request.id %}" class="flex-1">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-success w-full text-sm py-2">
+                                ✓ Принять
+                            </button>
+                        </form>
+                        <form method="POST" action="{% url 'user:decline_request' request.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-danger text-sm py-2 px-4">
+                                ✕
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <div class="text-6xl mb-4">📭</div>
+                <p class="text-gray-600 dark:text-gray-400">Нет входящих заявок</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Outgoing Requests -->
+        <div class="card p-6">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                📤 Исходящие заявки
+                <span class="ml-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-sm px-2 py-1 rounded-full">
+                    {{ sender_requests.count }}
+                </span>
+            </h2>
+
+            {% if sender_requests %}
+            <div class="space-y-4">
+                {% for request in sender_requests %}
+                <div class="border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                            {{ request.receiver.username.0|upper }}
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 dark:text-white">{{ request.receiver.username }}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                Заявка отправлена {{ request.created_at|timesince }} назад
+                            </p>
+                        </div>
+                        <div class="text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 px-2 py-1 rounded-full">
+                            Ожидание
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <div class="text-6xl mb-4">📤</div>
+                <p class="text-gray-600 dark:text-gray-400">Нет исходящих заявок</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="mt-12">
+        <div class="card p-6">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">💡 Рекомендуемые игроки</h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="border border-gray-200 dark:border-slate-700 rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold mx-auto mb-3">
+                        К
+                    </div>
+                    <h3 class="font-bold">КвестМастер</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Уровень 15 • 25 друзей</p>
+                    <button class="btn-primary text-sm w-full">Добавить</button>
+                </div>
+                
+                <div class="border border-gray-200 dark:border-slate-700 rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold mx-auto mb-3">
+                        Л
+                    </div>
+                    <h3 class="font-bold">ЛогикГуру</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Уровень 12 • 18 друзей</p>
+                    <button class="btn-primary text-sm w-full">Добавить</button>
+                </div>
+                
+                <div class="border border-gray-200 dark:border-slate-700 rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold mx-auto mb-3">
+                        И
+                    </div>
+                    <h3 class="font-bold">Искатель2024</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Уровень 8 • 12 друзей</p>
+                    <button class="btn-primary text-sm w-full">Добавить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

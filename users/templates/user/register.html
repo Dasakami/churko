@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация в Churko{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div class="text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-gold-500 rounded-full mb-6 glow animate-bounce-slow">
+                <span class="text-2xl font-bold text-white">C</span>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+                Присоединяйтесь к Churko!
+            </h2>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">
+                Создайте аккаунт и начните свое приключение
+            </p>
+        </div>
+
+        <form method="POST" class="mt-8 space-y-6">
+    {% csrf_token %}
+    <div class="card p-8">
+        <div class="space-y-4">
+            <div>
+                <label for="{{ form.username.id_for_label }}" class="form-label">
+                    Имя пользователя
+                </label>
+                <input type="text"
+                       name="{{ form.username.name }}"
+                       id="{{ form.username.id_for_label }}"
+                       class="form-input {% if form.username.errors %}border-red-500 focus:ring-red-400{% endif %}"
+                       placeholder="Выберите уникальное имя"
+                       value="{{ form.username.value|default:'' }}"
+                       required>
+                {% if form.username.errors %}
+                <div class="mt-1 text-sm text-red-600">
+                    {{ form.username.errors.0 }}
+                </div>
+                {% endif %}
+                <p class="mt-1 text-xs text-gray-500">
+                    Только буквы, цифры и символы @/./+/-/_
+                </p>
+            </div>
+
+            <div>
+                <label for="{{ form.email.id_for_label }}" class="form-label">
+                    Email (необязательно)
+                </label>
+                <input type="email"
+                       name="{{ form.email.name }}"
+                       id="{{ form.email.id_for_label }}"
+                       class="form-input {% if form.email.errors %}border-red-500 focus:ring-red-400{% endif %}"
+                       placeholder="your@email.com"
+                       value="{{ form.email.value|default:'' }}">
+                {% if form.email.errors %}
+                <div class="mt-1 text-sm text-red-600">
+                    {{ form.email.errors.0 }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.password1.id_for_label }}" class="form-label">
+                    Пароль
+                </label>
+                <input type="password"
+                       name="{{ form.password1.name }}"
+                       id="{{ form.password1.id_for_label }}"
+                       class="form-input {% if form.password1.errors %}border-red-500 focus:ring-red-400{% endif %}"
+                       placeholder="Создайте надежный пароль"
+                       required>
+                {% if form.password1.errors %}
+                <div class="mt-1 text-sm text-red-600">
+                    {{ form.password1.errors.0 }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.password2.id_for_label }}" class="form-label">
+                    Подтверждение пароля
+                </label>
+                <input type="password"
+                       name="{{ form.password2.name }}"
+                       id="{{ form.password2.id_for_label }}"
+                       class="form-input {% if form.password2.errors %}border-red-500 focus:ring-red-400{% endif %}"
+                       placeholder="Повторите пароль"
+                       required>
+                {% if form.password2.errors %}
+                <div class="mt-1 text-sm text-red-600">
+                    {{ form.password2.errors.0 }}
+                </div>
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="alert-error">
+                {{ form.non_field_errors.0 }}
+            </div>
+            {% endif %}
+
+            <div class="flex items-start">
+                <input type="checkbox" id="terms" class="mt-1 rounded border-gray-300 text-primary-600 focus:ring-primary-500" required>
+                <label for="terms" class="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                    Я согласен с <a href="#" class="text-primary-600 hover:text-primary-500">правилами игры</a>
+                    и <a href="#" class="text-primary-600 hover:text-primary-500">политикой конфиденциальности</a>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-primary w-full text-lg py-3">
+                🚀 Начать игру!
+            </button>
+        </div>
+    </div>
+</form>
+
+
+        <div class="text-center">
+            <p class="text-gray-600 dark:text-gray-400">
+                Уже есть аккаунт? 
+                <a href="{% url 'user:login' %}" class="text-primary-600 hover:text-primary-500 font-medium">
+                    Войдите здесь
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

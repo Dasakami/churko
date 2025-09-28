@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Уровень завершен! - Churko{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl w-full text-center">
+        <div class="animate-bounce-slow mb-8">
+            <div class="w-32 h-32 bg-gradient-to-br from-gold-500 to-gold-600 rounded-full flex items-center justify-center mx-auto glow gold-glow">
+                <span class="text-6xl">🏆</span>
+            </div>
+        </div>
+        
+        <h1 class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+            Поздравляем!
+        </h1>
+        
+        <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-8">
+            Вы успешно завершили уровень <strong class="text-primary-600">{{ room.level.name }}</strong> 
+            в районе <strong class="text-gold-600">{{ room.level.district.name }}</strong>!
+        </p>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-primary-600 mb-1">{{ room.progress.task_index }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Заданий решено</div>
+            </div>
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-green-600 mb-1">{{ room.completion_time|default:"15:30" }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Время</div>
+            </div>
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-gold-600 mb-1">+{{ room.earned_coins|default:100 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Монет</div>
+            </div>
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-red-600 mb-1">+{{ room.earned_exp|default:250 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Опыта</div>
+            </div>
+        </div>
+
+        <!-- Team Performance -->
+        <div class="card p-6 mb-8">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">👥 Команда</h2>
+            <div class="space-y-3">
+                {% for member in room.members.all %}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-gold-500 rounded-full flex items-center justify-center text-white font-bold">
+                            {{ member.user.username.0|upper }}
+                        </div>
+                        <span class="font-medium">{{ member.user.username }}</span>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">
+                        +{{ member.earned_exp|default:250 }} опыта
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="card p-6 mb-8">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">🏅 Новые достижения</h2>
+            <div class="space-y-3">
+                <div class="bg-gold-100 dark:bg-gold-900/30 border border-gold-300 dark:border-gold-700 rounded-lg p-4">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">🏆</span>
+                        <div>
+                            <h3 class="font-bold text-gold-800 dark:text-gold-300">Мастер {{ room.level.district.name }}</h3>
+                            <p class="text-sm text-gold-600 dark:text-gold-400">Завершен уровень в районе {{ room.level.district.name }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if room.members.count > 1 %}
+                <div class="bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-lg p-4">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">👥</span>
+                        <div>
+                            <h3 class="font-bold text-green-800 dark:text-green-300">Командный дух</h3>
+                            <p class="text-sm text-green-600 dark:text-green-400">Прошел уровень в команде из {{ room.members.count }} человек</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Next Actions -->
+        <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+            <a href="/districts/" class="btn-primary text-lg px-8 py-4">
+                🏘️ Выбрать новый район
+            </a>
+            <a href="{% url 'user:friend_list' %}" class="btn-secondary text-lg px-8 py-4">
+                👥 Пригласить друзей
+            </a>
+            <a href="/store/" class="btn-gold text-lg px-8 py-4">
+                🛒 Потратить монеты
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes confetti {
+    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    animation: confetti 3s linear infinite;
+}
+</style>
+
+<script>
+// Confetti effect
+function createConfetti() {
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => confetti.remove(), 5000);
+    }
+}
+
+// Start confetti on page load
+window.addEventListener('load', createConfetti);
+</script>
+{% endblock %}

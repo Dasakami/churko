@@ -1,0 +1,339 @@
+{% extends 'base.html' %}
+
+{% block title %}Районы города - Churko{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">🏘️ Районы города</h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            Исследуйте различные районы города, каждый со своими уникальными задачами и секретами
+        </p>
+    </div>
+
+    <!-- Districts Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <!-- Central District -->
+             {% for district in districts %}
+        <div class="card group overflow-hidden">
+            <div class="relative h-48 bg-gradient-to-br from-blue-500 to-blue-600 overflow-hidden">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <img src="{% if district.image %}{{ district.image.url }}{% endif %}" 
+                     alt="Центральный район" 
+                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute bottom-4 left-4 text-white">
+                    <h3 class="text-xl font-bold mb-1"> 🏅{{ district.name }}</h3>
+                    <p class="text-sm opacity-90">  {{ district.short_desc }}</p>
+                </div>
+                <div class="absolute top-4 right-4">
+                    <div class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        {{ district.difficulty }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Исследуйте исторический центр города с его памятниками, площадями и скрытыми секретами.
+                </p>
+                <div class="grid grid-cols-3 gap-2 mb-4 text-center text-sm">
+                    <div>
+                        <div class="font-bold text-primary-600">{{ district.levels.count }}</div>
+                        <div class="text-gray-600 dark:text-gray-400">Уровней</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-gold-600">500</div>
+                        <div class="text-gray-600 dark:text-gray-400">Монет</div>
+                    </div>
+                </div>
+                <a href="{% url 'level_list' district.id %}" class="btn-primary w-full">
+                    🚀 Начать исследование
+                </a>
+            </div>
+        </div>
+        
+{% endfor %}
+        <!-- Old Town -->
+        <!-- <div class="card group overflow-hidden">
+            <div class="relative h-48 bg-gradient-to-br from-amber-600 to-orange-600 overflow-hidden">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <img src="https://images.pexels.com/photos/161736/street-alley-narrow-art-161736.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop" 
+                     alt="Старый город" 
+                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute bottom-4 left-4 text-white">
+                    <h3 class="text-xl font-bold mb-1">🏰 Старый город</h3>
+                    <p class="text-sm opacity-90">Древние улочки</p>
+                </div>
+                <div class="absolute top-4 right-4">
+                    <div class="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        Средне
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Путешествие по средневековым улочкам полным загадок, легенд и исторических тайн.
+                </p>
+                <div class="grid grid-cols-3 gap-2 mb-4 text-center text-sm">
+                    <div>
+                        <div class="font-bold text-primary-600">8</div>
+                        <div class="text-gray-600 dark:text-gray-400">Уровней</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-green-600">75 мин</div>
+                        <div class="text-gray-600 dark:text-gray-400">Время</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-gold-600">800</div>
+                        <div class="text-gray-600 dark:text-gray-400">Монет</div>
+                    </div>
+                </div>
+                <button class="btn-secondary w-full" disabled>
+                    🔒 Требуется уровень 5
+                </button>
+            </div>
+        </div> -->
+
+        <!-- Industrial Zone -->
+        <!-- <div class="card group overflow-hidden">
+            <div class="relative h-48 bg-gradient-to-br from-gray-600 to-slate-700 overflow-hidden">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <img src="https://images.pexels.com/photos/247763/pexels-photo-247763.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop" 
+                     alt="Промышленная зона" 
+                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute bottom-4 left-4 text-white">
+                    <h3 class="text-xl font-bold mb-1">🏭 Промзона</h3>
+                    <p class="text-sm opacity-90">Индустриальные головоломки</p>
+                </div>
+                <div class="absolute top-4 right-4">
+                    <div class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        Сложно
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Технические задачи среди заброшенных заводов и промышленных объектов.
+                </p>
+                <div class="grid grid-cols-3 gap-2 mb-4 text-center text-sm">
+                    <div>
+                        <div class="font-bold text-primary-600">12</div>
+                        <div class="text-gray-600 dark:text-gray-400">Уровней</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-green-600">120 мин</div>
+                        <div class="text-gray-600 dark:text-gray-400">Время</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-gold-600">1500</div>
+                        <div class="text-gray-600 dark:text-gray-400">Монет</div>
+                    </div>
+                </div>
+                <button class="btn-secondary w-full" disabled>
+                    🔒 Требуется уровень 10
+                </button>
+            </div>
+        </div> -->
+
+        <!-- Park Zone -->
+        <!-- <div class="card group overflow-hidden">
+            <div class="relative h-48 bg-gradient-to-br from-green-500 to-emerald-600 overflow-hidden">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <img src="https://images.pexels.com/photos/1109541/pexels-photo-1109541.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop" 
+                     alt="Парковая зона" 
+                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute bottom-4 left-4 text-white">
+                    <h3 class="text-xl font-bold mb-1">🌳 Парковая зона</h3>
+                    <p class="text-sm opacity-90">Природные загадки</p>
+                </div>
+                <div class="absolute top-4 right-4">
+                    <div class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        Легко
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Экологические задачи среди зеленых аллей, прудов и скрытых тропинок.
+                </p>
+                <div class="grid grid-cols-3 gap-2 mb-4 text-center text-sm">
+                    <div>
+                        <div class="font-bold text-primary-600">6</div>
+                        <div class="text-gray-600 dark:text-gray-400">Уровней</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-green-600">50 мин</div>
+                        <div class="text-gray-600 dark:text-gray-400">Время</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-gold-600">600</div>
+                        <div class="text-gray-600 dark:text-gray-400">Монет</div>
+                    </div>
+                </div>
+                <a href="/districts/park/levels/" class="btn-success w-full">
+                    🌿 Исследовать природу
+                </a>
+            </div>
+        </div> -->
+
+        <!-- Business District -->
+        <!-- <div class="card group overflow-hidden">
+            <div class="relative h-48 bg-gradient-to-br from-purple-600 to-indigo-600 overflow-hidden">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <img src="https://images.pexels.com/photos/374870/pexels-photo-374870.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop" 
+                     alt="Деловой район" 
+                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute bottom-4 left-4 text-white">
+                    <h3 class="text-xl font-bold mb-1">🏢 Деловой центр</h3>
+                    <p class="text-sm opacity-90">Корпоративные тайны</p>
+                </div>
+                <div class="absolute top-4 right-4">
+                    <div class="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        Эксперт
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Бизнес-головоломки среди небоскребов, офисов и финансовых центров.
+                </p>
+                <div class="grid grid-cols-3 gap-2 mb-4 text-center text-sm">
+                    <div>
+                        <div class="font-bold text-primary-600">15</div>
+                        <div class="text-gray-600 dark:text-gray-400">Уровней</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-green-600">180 мин</div>
+                        <div class="text-gray-600 dark:text-gray-400">Время</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-gold-600">2500</div>
+                        <div class="text-gray-600 dark:text-gray-400">Монет</div>
+                    </div>
+                </div>
+                <button class="btn-secondary w-full" disabled>
+                    🔒 Требуется уровень 15
+                </button>
+            </div>
+        </div> -->
+
+        <!-- Underground -->
+        <!-- <div class="card group overflow-hidden">
+            <div class="relative h-48 bg-gradient-to-br from-slate-800 to-black overflow-hidden">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <img src="https://images.pexels.com/photos/2346091/pexels-photo-2346091.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop" 
+                     alt="Подземелье" 
+                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute bottom-4 left-4 text-white">
+                    <h3 class="text-xl font-bold mb-1">🚇 Подземелье</h3>
+                    <p class="text-sm opacity-90">Мрачные тоннели</p>
+                </div>
+                <div class="absolute top-4 right-4">
+                    <div class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        Hardcore
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Самые сложные загадки в темных тоннелях метро и подземных катакомбах.
+                </p>
+                <div class="grid grid-cols-3 gap-2 mb-4 text-center text-sm">
+                    <div>
+                        <div class="font-bold text-primary-600">20</div>
+                        <div class="text-gray-600 dark:text-gray-400">Уровней</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-green-600">240 мин</div>
+                        <div class="text-gray-600 dark:text-gray-400">Время</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-gold-600">5000</div>
+                        <div class="text-gray-600 dark:text-gray-400">Монет</div>
+                    </div>
+                </div>
+                <button class="btn-secondary w-full" disabled>
+                    🔒 Требуется уровень 25
+                </button>
+            </div>
+        </div> -->
+    </div>
+
+    <!-- Player Stats -->
+    <div class="card p-8 mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">📊 Ваш прогресс</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="text-center">
+                <div class="text-3xl font-bold text-primary-600 mb-2">{{ user.profile.level|default:3 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Текущий уровень</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-green-600 mb-2">{{ user.profile.completed_districts|default:1 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Пройдено районов</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-gold-600 mb-2">{{ user.profile.coins|default:250 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Монет</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-red-600 mb-2">{{ user.profile.hints|default:5 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Подсказок</div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Tips -->
+    <div class="card p-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">💡 Советы для новичков</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                    <div class="bg-green-100 dark:bg-green-900/30 rounded-full p-2">
+                        <span class="text-green-600">👥</span>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">Играйте в команде</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Совместное решение задач повышает шансы на успех</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <div class="bg-yellow-100 dark:bg-yellow-900/30 rounded-full p-2">
+                        <span class="text-yellow-600">⏱️</span>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">Следите за временем</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">У каждого задания есть временное ограничение</p>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                    <div class="bg-blue-100 dark:bg-blue-900/30 rounded-full p-2">
+                        <span class="text-blue-600">💡</span>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">Используйте подсказки</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Не стесняйтесь тратить подсказки на сложных уровнях</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <div class="bg-purple-100 dark:bg-purple-900/30 rounded-full p-2">
+                        <span class="text-purple-600">🎯</span>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">Начните с легких районов</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Прокачивайте навыки постепенно</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

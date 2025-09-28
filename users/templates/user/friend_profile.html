@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}Профиль игрока - {{ profile.username }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Profile Header -->
+    <div class="card p-8 mb-8">
+        <div class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+            <div class="relative">
+                {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="" class="w-32 h-32 rounded-full">
+                {% else %}
+                    <div class="w-32 h-32 bg-gradient-to-br from-primary-500 to-gold-500 rounded-full flex items-center justify-center text-4xl font-bold text-white glow">
+                        {{ profile.username.0|upper }}
+                    </div>
+                {% endif %}
+                <div class="absolute -bottom-2 -right-2 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                    {{ level|default:1 }}
+                </div>
+            </div>
+            
+            <div class="flex-1 text-center md:text-left">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                    {{ profile.username }}
+                </h1>
+                <p class="text-lg text-gray-600 dark:text-gray-400 mb-4">
+                    {{ profile.title|default:"Начинающий искатель" }}
+                </p>
+                
+                <div class="flex flex-wrap justify-center md:justify-start gap-4 mb-6">
+                    <div class="bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 px-3 py-1 rounded-full text-sm">
+                        📅 Играет с {{ profile.date_joined|date:"d.m.Y" }}
+                    </div>
+                    <div class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-3 py-1 rounded-full text-sm">
+                        🏆 {{ completed_levels|default:0 }} уровней пройдено
+                    </div>
+                    <div class="bg-yellow-100 dark:bg-yellow-900/30 text-gold-800 dark:text-gold-300 px-3 py-1 rounded-full text-sm">
+                        💰 {{ coins|default:0 }} монет
+                    </div>
+                    <div class="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded-full text-sm">
+                        💡 {{ hints|default:3 }} подсказок
+                    </div>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 mb-2">
+                    <div class="bg-gradient-to-r from-primary-500 to-gold-500 h-3 rounded-full transition-all duration-500" 
+                         style="width: {{ experience_percentage|floatformat:0 }}%"></div>
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    {{ experience }} / {{ experience_needed }} опыта до следующего уровня
+                </p>
+
+                <!-- Friendship Buttons -->
+                {% if user.is_authenticated and user != profile %}
+                    <div class="mt-4 flex flex-wrap gap-3 justify-center md:justify-start">
+                        {% if friendship_status == 'friends' %}
+                            <form method="post" action="{% url 'user:remove_friend' profile.username %}">
+                                {% csrf_token %}
+                                <button class="btn-danger px-6 py-2 rounded">❌ Удалить из друзей</button>
+                            </form>
+                        {% elif friendship_status == 'request_sent' %}
+                            <button class="btn-secondary px-6 py-2 rounded" disabled>📨 Заявка отправлена</button>
+                        {% elif friendship_status == 'request_received' %}
+                            <form method="post" action="{% url 'user:accept_friend' profile.id %}">
+                                {% csrf_token %}
+                                <button class="btn-success px-6 py-2 rounded">✅ Принять заявку</button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{% url 'user:send_request' profile.id %}">
+                                {% csrf_token %}
+                                <button class="btn-primary px-6 py-2 rounded">➕ Добавить в друзья</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="card p-6 text-center">
+            <div class="text-3xl font-bold text-primary-600 mb-2">{{ completed_levels|default:0 }}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Пройдено уровней</div>
+        </div>
+        <div class="card p-6 text-center">
+            <div class="text-3xl font-bold text-green-600 mb-2">{{ coins|default:0 }}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Монет</div>
+        </div>
+        <div class="card p-6 text-center">
+            <div class="text-3xl font-bold text-gold-600 mb-2">{{ hints|default:3 }}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Подсказок</div>
+        </div>
+        <div class="card p-6 text-center">
+            <div class="text-3xl font-bold text-red-600 mb-2">{{ friends_count|default:0 }}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Друзей</div>
+        </div>
+    </div>
+
+    <!-- Achievements -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">🏆 Достижения</h2>
+        <div class="space-y-3">
+            {% for achi in achievements %}
+            <div class="flex items-center space-x-3 p-3 bg-gold-100 dark:bg-gold-900/30 rounded-lg">
+                <div class="text-2xl">{{ achi.achievement.icon }}</div>
+                <div>
+                    <div class="font-medium">{{ achi.achievement.name }}</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">{{ achi.achievement.description }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            {% if achievements|length > 3 %}
+            <div class="text-center py-4">
+                <a href="#" class="text-primary-600 hover:text-primary-700 text-sm">Показать все достижения →</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">📈 Последняя активность</h2>
+        <div class="space-y-4">
+            {% for log in profile.activity_logs.all|slice:":5" %}
+            <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    {% if log.activity_type == 'task_complete' %}✓{% elif log.activity_type == 'tournament_join' %}🎯{% elif log.activity_type == 'tournament_win' %}🏆{% elif log.activity_type == 'duel_complete' %}⚔️{% elif log.activity_type == 'chest_open' %}💰{% elif log.activity_type == 'level_up' %}⬆️{% elif log.activity_type == 'achievement' %}🏅{% endif %}
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm">{{ log.description }}</p>
+                    <p class="text-xs text-gray-500">{{ log.created_at|timesince }} назад</p>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 text-sm">Активность отсутствует</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

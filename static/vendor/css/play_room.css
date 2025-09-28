@@ -1,0 +1,254 @@
+/* play_room.css */
+
+.play-room {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+}
+
+/* Заголовок и таймеры */
+
+.play-room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.timers {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.timer {
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 8px 15px;
+  border-radius: 8px;
+  background-color: #d9d9d9;
+  color: #333;
+  user-select: none;
+  min-width: 180px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.timer.green {
+  background-color: #b8e994;
+  color: #2e7d32;
+}
+
+.timer.yellow {
+  background-color: #fff176;
+  color: #f57f17;
+}
+
+.timer.red {
+  background-color: #ef5350;
+  color: #b71c1c;
+}
+
+/* Основной блок - две колонки */
+
+.play-room-main {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  min-height: 400px;
+  flex-wrap: wrap;
+}
+
+/* Задача */
+
+.task-section {
+  flex: 2 1 600px;
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 0 12px rgb(0 0 0 / 0.07);
+  display: flex;
+  flex-direction: column;
+}
+
+.task-section h3 {
+  margin-top: 0;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+}
+
+.task-text {
+  flex-grow: 1;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 25px;
+  white-space: pre-wrap;
+}
+
+/* Форма ввода */
+
+.task-form {
+  display: flex;
+  gap: 10px;
+}
+
+.task-form input[type="text"] {
+  flex-grow: 1;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.task-form input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.task-form button {
+  padding: 12px 25px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.task-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Sidebar (чат и участники) */
+
+.sidebar {
+  flex: 1 1 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 280px;
+}
+
+/* Список участников */
+
+.members-list {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 0.05);
+  font-size: 0.95rem;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.members-list h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.members-list ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.members-list li {
+  margin-bottom: 6px;
+}
+
+/* Чат */
+
+.chat-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 0.05);
+  max-height: 450px;
+}
+
+.chat-container h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.chat-box {
+  flex-grow: 1;
+  overflow-y: auto;
+  font-size: 0.95rem;
+  padding-right: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat-message {
+  margin-bottom: 8px;
+}
+
+.chat-message strong {
+  color: #007bff;
+}
+
+/* Ввод сообщений */
+
+.chat-input-wrapper {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input-wrapper input {
+  flex-grow: 1;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  transition: border-color 0.3s ease;
+}
+
+.chat-input-wrapper input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.chat-input-wrapper button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chat-input-wrapper button:hover {
+  background-color: #0056b3;
+}
+
+/* Адаптив */
+
+@media (max-width: 900px) {
+  .play-room-main {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    max-height: 220px;
+  }
+
+  .chat-container, .members-list {
+    max-height: 180px;
+    flex: 1;
+  }
+}
