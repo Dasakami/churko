@@ -40,6 +40,7 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./certs:/etc/letsencrypt
+      - ./certbot-webroot:/var/www/certbot
     ports:
       - "8080:80"   # HTTP нестандартный порт
       - "446:443"   # HTTPS нестандартный порт
@@ -52,6 +53,7 @@ services:
     volumes:
       - ./certs:/etc/letsencrypt
       - ./certs-data:/var/lib/letsencrypt
+      - ./certbot-webroot:/var/www/certbot
     entrypoint: ""
     command: >
       certbot certonly --webroot 
