@@ -101,9 +101,9 @@
 
     <!-- Мобильное меню -->
     <div x-show="open" x-transition class="md:hidden flex flex-col space-y-2 py-2">
+      {% if user.is_authenticated %}
       <a href="/districts/" class="nav-link">Районы</a>
       <a href="/store/" class="nav-link">Магазин</a>
-      {% if user.is_authenticated %}
         <a href="{% url 'user:friend_list' %}" class="nav-link">Друзья</a>
         <a href="{% url 'user:profile' %}" class="nav-link">Профиль</a>
         <a href="{% url 'user:logout' %}" class="btn-danger w-full text-center">Выйти</a>

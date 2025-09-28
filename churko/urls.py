@@ -11,7 +11,7 @@ handler400 = 'quests.views.bad_request'
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('sokka/', admin.site.urls),
     path('', include('quests.urls')),
     path('rooms/', include('rooms.urls')),
     path('user/', include('users.urls')),

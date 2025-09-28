@@ -1,24 +1,30 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-bind:class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>500</title>
+    <title>500 - Внутренняя ошибка сервера</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        @keyframes float { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-20px); } }
+        .btn-primary { background: linear-gradient(90deg,#3b82f6 0%,#f59e0b 100%); color:white; padding:.75rem 1.5rem; border-radius:.75rem; font-weight:600; box-shadow:0 8px 22px rgba(59,130,246,0.2); transition:transform .2s, filter .2s; }
+        .btn-primary:hover { transform: translateY(-2px) scale(1.02); filter: brightness(1.05); }
+    </style>
 </head>
-<body>
-    <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50 dark:bg-slate-900 px-6 py-12 text-center">
-  <div class="max-w-md w-full">
-    <div class="inline-flex items-center justify-center w-20 h-20 bg-purple-100 dark:bg-purple-900 rounded-full mb-6">
-      <svg class="w-12 h-12 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-6a9 9 0 11-18 0 9 9 0 0118 0z"/>
-      </svg>
+<body class="min-h-screen bg-gray-50 dark:bg-slate-900 flex flex-col justify-center items-center px-4">
+    <div class="max-w-2xl text-center">
+        <h1 class="text-8xl font-extrabold text-red-600 mb-4 animate-bounce-slow">500</h1>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Внутренняя ошибка сервера</h2>
+        <p class="text-gray-600 dark:text-gray-400 mb-6 text-lg md:text-xl">Упс! Что-то пошло не так на сервере. Мы уже работаем над исправлением.</p>
+        <a href="/" class="btn-primary inline-block mb-6">Вернуться на главную</a>
+        <div class="mt-12">
+            <img src="{% static 'images/500-illustration.svg' %}" alt="500 иллюстрация" class="mx-auto w-72 md:w-96 animate-float">
+        </div>
+        <div class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+            <p>Если проблема повторяется, обратитесь к администратору сайта.</p>
+        </div>
     </div>
-    <h1 class="text-6xl font-extrabold text-gray-900 dark:text-white mb-4">500</h1>
-    <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-4">Внутренняя ошибка сервера</h2>
-    <p class="text-gray-600 dark:text-gray-400 mb-6">Произошла ошибка на сервере. Попробуйте обновить страницу или вернуться позже.</p>
-    <a href="/" class="btn-primary inline-block px-6 py-3 text-lg">Вернуться на главную</a>
-  </div>
-</div>
-
 </body>
 </html>
