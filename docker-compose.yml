@@ -35,34 +35,6 @@ services:
       timeout: 10s
       retries: 5
 
-  nginx:
-    image: nginx:stable
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./certs:/etc/letsencrypt
-      - ./certbot-webroot:/var/www/certbot
-    ports:
-      - "80:80"   # HTTP нестандартный порт
-      - "443:443"   # HTTPS нестандартный порт
-    depends_on:
-      - web
-    restart: always
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./certs:/etc/letsencrypt
-      - ./certs-data:/var/lib/letsencrypt
-      - ./certbot-webroot:/var/www/certbot
-    entrypoint: ""
-    command: >
-      certbot certonly --webroot 
-      --webroot-path=/var/www/certbot 
-      --email dendasakamil@gmail.com 
-      --agree-tos 
-      --no-eff-email 
-      -d churko.daskoro.site -d www.churko.daskoro.site
-
 
 volumes:
   postgres_data:

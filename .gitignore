@@ -19,3 +19,4 @@ quests/templates/400.html
 quests/templates/500.html
 quests/templates/robots.txt
 quests/templates/yandex_9a99c4bc5ddefd70.html
+users/templates/user/

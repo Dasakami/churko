@@ -1,16 +1,23 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from quests.models import District, Level, Task
-from .serializers import DistrictSerializer, LevelSerializer, TaskSerializer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from django.contrib.auth import get_user_model
+from .models import Room, RoomMember, RoomProgress, ChatMessage, RoomInvite
 
+from .serializers import (
+    RoomSerializer, RoomMemberSerializer, RoomProgressSerializer,
+    ChatMessageSerializer, RoomInviteSerializer, DistrictSerializer, LevelSerializer, TaskSerializer
+)
 
-# Получить список районов
 class DistrictListAPIView(generics.ListAPIView):
     queryset = District.objects.filter(is_active=True)
     serializer_class = DistrictSerializer
     permission_classes = [permissions.AllowAny]
 
 
-# Уровни конкретного района
 class LevelListAPIView(generics.ListAPIView):
     serializer_class = LevelSerializer
     permission_classes = [permissions.AllowAny]
@@ -20,7 +27,6 @@ class LevelListAPIView(generics.ListAPIView):
         return Level.objects.filter(district_id=district_id, is_active=True)
 
 
-# Детали уровня (с задачами)
 class LevelDetailAPIView(generics.RetrieveAPIView):
     queryset = Level.objects.all()
     serializer_class = LevelSerializer
@@ -28,7 +34,6 @@ class LevelDetailAPIView(generics.RetrieveAPIView):
     permission_classes = [permissions.AllowAny]
 
 
-# Список задач уровня
 class TaskListAPIView(generics.ListAPIView):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -38,24 +43,11 @@ class TaskListAPIView(generics.ListAPIView):
         return Task.objects.filter(level_id=level_id).order_by("order")
 
 
-from rest_framework import generics, permissions, status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
-from django.contrib.auth import get_user_model
 
-from .models import Room, RoomMember, RoomProgress, ChatMessage, RoomInvite
-
-from .serializers import (
-    RoomSerializer, RoomMemberSerializer, RoomProgressSerializer,
-    ChatMessageSerializer, RoomInviteSerializer
-)
 
 User = get_user_model()
 
 
-# Создать комнату
 class CreateRoomAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -70,7 +62,6 @@ class CreateRoomAPIView(APIView):
         return Response(RoomSerializer(room).data, status=status.HTTP_201_CREATED)
 
 
-# Играть в комнате (получить инфу)
 class PlayRoomAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -91,7 +82,6 @@ class PlayRoomAPIView(APIView):
         return Response(data)
 
 
-# Ответ на задачу
 class SubmitTaskAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -116,7 +106,7 @@ class SubmitTaskAPIView(APIView):
         return Response({"error": "Неверный код"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Пригласить в комнату (ссылка)
+
 class CreateRoomInviteAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -130,7 +120,6 @@ class CreateRoomInviteAPIView(APIView):
         return Response(RoomInviteSerializer(invite).data)
 
 
-# Присоединиться по ссылке
 class JoinRoomByLinkAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
